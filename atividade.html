@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <script>
+        class Aluno {
+            nome = "";
+            endereco = "";
+            data_nascimento = "";
+            email = "";
+            telefone = "";
+            #avaliacoes = [];
+            #id = "";
+            #media = 0;
+            #aprovado = Boolean;
+
+            constructor(nome, id) {
+                this.nome = nome;
+                this.#id = id;
+            }
+
+            mostrarId() {
+                let id = this.#id
+                return id
+            }
+
+            get idade() {
+                if (this.data_nascimento) {
+                    const anoAtual = new Date().getFullYear();
+                    const arrDataNascimento = this.data_nascimento.split('/');
+                    const anoNascimento = Number(arrDataNascimento[2]);
+
+                    const idadeAluno = anoAtual - anoNascimento;
+
+                    return idadeAluno;
+                } else {
+                    throw new Error('Data de nascimento do aluno não informada')
+                }
+            }
+
+            adicionarAvaliacao(avaliacao) {
+                this.#avaliacoes.push(avaliacao);
+            }
+
+            obterMedia() {
+                const somaNotas = this.#avaliacoes.reduce((total, avaliacoes) => total + avaliacoes.nota, 0)
+                const media = somaNotas / this.#avaliacoes.length;
+
+                media >= 7 ? this.#aprovado = true : this.#aprovado = false;
+
+                this.media = media;
+
+                return media;
+            }
+
+            alunoAprovado() {
+                return this.#aprovado;
+            }
+        }
+
+        class Avaliacao {
+            tipo = "";
+            nota = 0;
+            observacao = "";
+
+            constructor(tipo, nota) {
+                this.tipo = tipo;
+                this.nota = nota;
+            }
+        }
+
+        function geradorId() {
+            let id = 0;
+            return function () {
+                id++;
+                return id;
+            }
+        }
+
+        let gerarIdAluno = geradorId()
+
+        const aluno1 = new Aluno("Danillo", gerarIdAluno());
+        const aluno2 = new Aluno("João", gerarIdAluno());
+
+        const primeiraAvaliacao = new Avaliacao('Prova', 0)
+        const segundaAvaliacao = new Avaliacao('Seminario', 10)
+
+        aluno1.adicionarAvaliacao(primeiraAvaliacao);
+        aluno1.adicionarAvaliacao(segundaAvaliacao);
+
+        console.log(aluno1)
+
+        aluno1.data_nascimento = '08/09/1995';
+
+        console.log(aluno1.mostrarId())
+        console.log(aluno2.mostrarId())
+
+        console.log(aluno1.idade)
+        console.log(aluno1.obterMedia())
+        console.log("O aluno foi aprovado?", aluno1.alunoAprovado())
+    </script>
+</body>
+
+</html>
